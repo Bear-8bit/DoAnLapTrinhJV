@@ -29,10 +29,6 @@ public class UIStatPanel extends UIJPanelBG {
         ships[4].setIcon(new ImageIcon(getClass().getResource("/Resources/Game/Ship/ship2.png")));
         ships[5].setIcon(new ImageIcon(getClass().getResource("/Resources/Game/Ship/ship2.png")));
         ships[6].setIcon(new ImageIcon(getClass().getResource("/Resources/Game/Ship/ship2.png")));
-    //    ships[6].setIcon(new ImageIcon(getClass().getResource("/Resources/Game/Ship/ship1.png")));
-    //    ships[7].setIcon(new ImageIcon(getClass().getResource("/Resources/Game/Ship/ship1.png")));
-    //    ships[8].setIcon(new ImageIcon(getClass().getResource("/Resources/Game/Ship/ship1.png")));
-    //    ships[9].setIcon(new ImageIcon(getClass().getResource("/Resources/Game/Ship/ship1.png")));
 
         ships[0].setBounds(50, 25, 170, 35);
         ships[1].setBounds(300, 25, 135, 35);
@@ -41,10 +37,5 @@ public class UIStatPanel extends UIJPanelBG {
         ships[4].setBounds(230, 60, 70, 35);
         ships[5].setBounds(310, 60, 70, 35);
         ships[6].setBounds(390, 60, 70, 35);
-    //    ships[6].setBounds(265, 60, 47, 35);
-    //    ships[7].setBounds(322, 60, 47, 35);
-    //    ships[8].setBounds(379, 60, 47, 35);
-    //    ships[9].setBounds(436, 60, 47, 35);
-
     }
 }

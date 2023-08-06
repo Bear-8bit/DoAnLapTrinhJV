@@ -40,7 +40,7 @@ public class Coordinate {
 
     public String toString(){
         char Y=(char)(coordY + 65);
-        return " " + (coordX+1) + " " + Y;
+        return " " + (coordX + 1) + " " + Y;
     }
     @Override
     public boolean equals(Object obj) {

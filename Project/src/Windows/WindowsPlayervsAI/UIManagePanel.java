@@ -16,7 +16,7 @@ public class UIManagePanel extends UIJPanelBG {
     private static final long serialVersionUID = 1L;
     Cursor cursor = Cursor.getPredefinedCursor(Cursor.HAND_CURSOR);
     public JRadioButtonMenuItem[] ship;
-    public JLabel[] counterLabel = new JLabel[5];
+    public JLabel[] counterLabel = new JLabel[4];
     JLabel[] xLabel = new JLabel[4];
     ButtonGroup radioButtonShip;
     public JRadioButton[] direction;
@@ -56,13 +56,11 @@ public class UIManagePanel extends UIJPanelBG {
         ship[3] = new JRadioButtonMenuItem(ship2);
 
         //counterLabel là dùng để chỉ số lượng mà mỗi loại tàu có chỉ có 4 loại tàu
-        //counterLabel[4] là dành cho một loại tàu khác không sử dụng trong game
-        //ship[3] = new JRadioButtonMenuItem(ship1);
         counterLabel[0] = new JLabel("1");
         counterLabel[1] = new JLabel("1");
         counterLabel[2] = new JLabel("2");
         counterLabel[3] = new JLabel("3");
-        counterLabel[4] = new JLabel("0");
+
         for (int i = 0; i < ship.length; i++) {
             ship[i].setBounds(0, 25 + (i * 60), 160, 40);
             radioButtonShip.add(ship[i]);
@@ -82,13 +80,13 @@ public class UIManagePanel extends UIJPanelBG {
         // Chiều dọc/Chiều ngang
         direction = new JRadioButton[2];
         ButtonGroup radioButtonDirection = new ButtonGroup();
-        direction[0] = new JRadioButton("Chiều ngang");
+        direction[0] = new JRadioButton("Horizontal");
         direction[0].setBounds(0, 260, 105, 20);
         radioButtonDirection.add(direction[0]);
         direction[0].setSelected(true);
         direction[0].setOpaque(false);
         shipSelect.add(direction[0]);
-        direction[1] = new JRadioButton("Chiều dọc");
+        direction[1] = new JRadioButton("Vertical");
         direction[1].setBounds(110, 260, 105, 20);
         direction[1].setOpaque(false);
         radioButtonDirection.add(direction[1]);

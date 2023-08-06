@@ -1,12 +1,22 @@
 package Windows;
 
+import Model.Image.UIJPanelBG;
 import Windows.WindowsPlayervsAI.FrameMangeShip;
 
 import javax.swing.*;
+import javax.swing.border.Border;
+import javax.swing.text.JTextComponent;
 import java.awt.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.List;
+import java.util.Scanner;
 
 public class MainMenuFrame extends JFrame implements Runnable {
     static MainMenuFrame inst;
+    public JFrame frame = new JFrame("Battleship - Steampunk Edition");
     MenuWindowPanel menuWindowPanel;
     private int mX, mY;
     private int x, y;
@@ -47,15 +57,49 @@ public class MainMenuFrame extends JFrame implements Runnable {
         t.run();
     }
 
-    public void quitGame(){
-        dispose();
-        System.exit(0);
+    public void pvpGame(){
+        JOptionPane.showMessageDialog(frame, "Tính năng đang được cập nhật");
     }
-
     public void aiGame(){
         removePanels();
         FrameMangeShip manage = new FrameMangeShip();
         manage.setVisible(true);
+    }
+    public void gameStat(){
+        File file = new File("SavePoint/point.txt");
+        JPanel container = new JPanel();
+        container.setLayout(new BoxLayout(container, BoxLayout.Y_AXIS));
+
+
+        try
+        {
+            BufferedReader br = new BufferedReader(new FileReader(file));
+            String line;
+
+            while((line = br.readLine()) != null)
+            {
+                JLabel label = new JLabel(line.toString());
+                label.setText(line);
+                container.add(label);
+
+                frame.add(container);
+                frame.setBounds(100, 100, 290, 450);
+                frame.setResizable(true);
+                frame.setVisible(true);
+
+                System.out.println(line);
+            }
+            br.close();
+        }
+        catch (IOException ex)
+        {
+            ex.printStackTrace();
+        }
+
+    }
+    public void quitGame(){
+        dispose();
+        System.exit(0);
     }
 
     public void removePanels() {

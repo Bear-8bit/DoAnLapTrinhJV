@@ -11,6 +11,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.io.*;
 import java.util.LinkedList;
 import java.util.StringTokenizer;
 
@@ -22,17 +23,19 @@ public class FrameBattle implements ActionListener, KeyListener {
     Cursor cursorDefault = Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR);
     UIJPanelBG panel = new UIJPanelBG(
             Toolkit.getDefaultToolkit().createImage(getClass().getResource("/Resources/GUI/battleBG.jpg")));
-    Report rep;
     Computer cpu;
     Board cpuBoard;
     Board playerBoard;
     int numShipPlayer = 7;
     int numShipCPU = 7;
+    int pointPlayer = 0;
+    int pointCPU = 0;
     StringBuilder sb = new StringBuilder();
     boolean b = true;
     UIStatPanel statPlayer;
     UIStatPanel statCPU;
     JPanel targetPanel = new JPanel(null);
+    JLabel label = new JLabel();
     UIJPanelBG target = new UIJPanelBG(
             Toolkit.getDefaultToolkit().createImage(getClass().getResource("/Resources/Game/Board/target.png")));
     ImageIcon wreck = new ImageIcon(getClass().getResource("/Resources/Game/Board/wreck.gif"));
@@ -56,6 +59,12 @@ public class FrameBattle implements ActionListener, KeyListener {
         int y = (int) ((dimension.getHeight() - frame.getHeight()) / 2);
         frame.setLocation(x, y);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        label = new JLabel("POINT: " + pointPlayer);
+        label.setBounds(50,-35,500,120);
+        label.setFont(new Font("PEAK", Font.BOLD, 25));
+        label.setForeground(Color.WHITE);
+
         //Panel chứa các tàu có thể bị đánh chìm
         statPlayer = new UIStatPanel();
         statCPU = new UIStatPanel();
@@ -69,6 +78,7 @@ public class FrameBattle implements ActionListener, KeyListener {
         playerPanel.sky.add(targetPanel);
 
         panel.add(playerPanel);
+        playerPanel.add(label);
         playerPanel.setBounds(0, 0, UIBoardPanel.X, UIBoardPanel.Y);
         playerPanel.setOpaque(false);
         panel.add(cpuPanel);
@@ -76,18 +86,19 @@ public class FrameBattle implements ActionListener, KeyListener {
         panel.add(comandPanel);
         frame.add(panel);
         frame.setResizable(false);
-        timer = new Timer(2000, new TimeManager());
+        timer = new Timer(1000, new TimeManager());
         turnCPU = false;
 
         for (int i = 0; i < cpuPanel.buttons.length; i++) {
             for (int j = 0; j < cpuPanel.buttons[i].length; j++) {
                 cpuPanel.buttons[i][j].addActionListener(this);
-                cpuPanel.buttons[i][j].setActionCommand("" + i + " " + j);
+                cpuPanel.buttons[i][j].setActionCommand(" " + i + " " + j);
             }
         }
         for (int[] v : playerShips) {
             playerPanel.drawShip(v);
         }
+
 
     }
 
@@ -107,16 +118,34 @@ public class FrameBattle implements ActionListener, KeyListener {
         } else {
             boardPanel = cpuPanel;
         }
-        if (what == "X") {
+        if (what == "X" && boardPanel == cpuPanel ) {
             boardPanel.buttons[x][y].setIcon(fire);
             boardPanel.buttons[x][y].setEnabled(false);
             boardPanel.buttons[x][y].setDisabledIcon(fire);
             boardPanel.buttons[x][y].setCursor(cursorDefault);
-        } else {
+            pointPlayer += 10;
+            label.setText("POINT: " + pointPlayer);
+        } else if (what == "X" && boardPanel == playerPanel) {
+            boardPanel.buttons[x][y].setIcon(fire);
+            boardPanel.buttons[x][y].setEnabled(false);
+            boardPanel.buttons[x][y].setDisabledIcon(fire);
+            boardPanel.buttons[x][y].setCursor(cursorDefault);
+            pointCPU += 10;
+            System.out.println(" CPU: " + pointCPU);
+        } else if (what == "A" && boardPanel == cpuPanel){
+            pointPlayer -= 1;
             boardPanel.buttons[x][y].setIcon(water);
             boardPanel.buttons[x][y].setEnabled(false);
             boardPanel.buttons[x][y].setDisabledIcon(water);
             boardPanel.buttons[x][y].setCursor(cursorDefault);
+            label.setText("POINT: " + pointPlayer);
+
+        } else if (what == "A" && boardPanel == playerPanel){
+            boardPanel.buttons[x][y].setIcon(water);
+            boardPanel.buttons[x][y].setEnabled(false);
+            boardPanel.buttons[x][y].setDisabledIcon(water);
+            boardPanel.buttons[x][y].setCursor(cursorDefault);
+            pointCPU -= 1;
         }
 
     }
@@ -125,6 +154,7 @@ public class FrameBattle implements ActionListener, KeyListener {
     public void actionPerformed(ActionEvent e) {
         if (turnCPU)
             return;
+        File file = new File("SavePoint/point.txt");
         JButton source = (JButton) e.getSource();
         StringTokenizer st = new StringTokenizer(source.getActionCommand(), " ");
         int x = Integer.parseInt(st.nextToken());
@@ -141,17 +171,32 @@ public class FrameBattle implements ActionListener, KeyListener {
                 setSunk(shipSink);
                 // Người chơi được quyền lựa chọn tạo trận mới hoặc thoát game sau trận đã kết thúc
                 if (numShipCPU == 0) {
-                    Object[] options = { "Trận mới", "Quay lại màn hình chính" };
-                    int n = JOptionPane.showOptionDialog(frame, (new JLabel("Bạn đã thắng!", JLabel.CENTER)),
+                    Object[] options = { "New Match", "Quit" };
+                    int n = JOptionPane.showOptionDialog(frame, (new JLabel("You Win!" + " Your Point: " + pointPlayer, JLabel.CENTER)),
                             "Win", JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE, null, options,
                             options[1]);
+
+                    try
+                    {
+                        BufferedWriter bw = new BufferedWriter(new FileWriter(file, true));
+                        bw.write("-------------------------------------------------------------------");
+                        bw.newLine();
+                        bw.write("|||     "+  pointPlayer +"         |||      Victory     |||             PVE         |||" );
+                        bw.newLine();
+
+                        bw.close();
+                    }
+                    catch (IOException ex)
+                    {
+                        ex.printStackTrace();
+                    }
+
                     if (n == 0) {
                         FrameMangeShip restart = new FrameMangeShip();
                         restart.setVisible(true);
                         this.frame.setVisible(false);
                     } else {
-                        this.frame.setVisible(false);
-                        MainMenuFrame mainMenuFrame = new MainMenuFrame(1500,800);
+                        System.exit(0);
                     }
                 }
             }
@@ -252,18 +297,6 @@ public class FrameBattle implements ActionListener, KeyListener {
                 else
                     panel.ships[4].setEnabled(false);
                 break;
-            case 1:
-              //  if (!panel.ships[6].isEnabled())
-              //      if (!panel.ships[7].isEnabled())
-              //          if (!panel.ships[8].isEnabled())
-              //              panel.ships[9].setEnabled(false);
-              //          else
-              //              panel.ships[8].setEnabled(false);
-              //      else
-              //          panel.ships[7].setEnabled(false);
-              //  else
-              //      panel.ships[6].setEnabled(false);
-                break;
             default:
                 break;
         }
@@ -306,7 +339,7 @@ public class FrameBattle implements ActionListener, KeyListener {
         public void actionPerformed(ActionEvent arg0) {
             timer.stop();
             boolean flag;
-
+            File file = new File("SavePoint/point.txt");
             Report report = cpu.myTurn();
             drawTarget(report.getC().getCoordX() * 50, report.getC().getCoordY() * 50);
             flag = report.isHits();
@@ -315,10 +348,27 @@ public class FrameBattle implements ActionListener, KeyListener {
                 numShipPlayer--;
                 setSunk(report.getC());
                 if (numShipPlayer == 0) {
-                    Object[] options = { "Trận mới", "Quay lại màn hình chính" };
-                    int n = JOptionPane.showOptionDialog(frame, (new JLabel("Bạn đã Thua", JLabel.CENTER)),
+                    Object[] options = { "Rematch", "Quit" };
+                    int n = JOptionPane.showOptionDialog(frame, (new JLabel("You Lose" + " Your Point: " + pointPlayer, JLabel.CENTER)),
                             "Game Over", JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE, null, options,
                             options[1]);
+
+
+                    try
+                    {
+                        BufferedWriter bw = new BufferedWriter(new FileWriter(file, true));
+                        bw.write("-------------------------------------------------------------------");
+                        bw.newLine();
+                        bw.write("|||     "+  pointPlayer +"         |||      Defeat     |||             PVE         |||" );
+                        bw.newLine();
+
+                        bw.close();
+                    }
+                    catch (IOException ex)
+                    {
+                        ex.printStackTrace();
+                    }
+
                     if (n == 0) {
                         FrameMangeShip restart = new FrameMangeShip();
                         restart.setVisible(true);

@@ -15,11 +15,11 @@ import java.util.StringTokenizer;
 
 public class FrameMangeShip extends JFrame implements ActionListener, KeyListener {
     private static final long serialVersionUID = 2923975805665801740L;
-    private static final int NUM_SHIP = 7;
+    private static final int NUM_SHIP = 7; // Số lượng tàu tối đa
     LinkedList<int[]> playerShips; // Chứa các tàu đã được đặt
     boolean finished = false;
     int enterShips = 0;
-    int[] counterShip = { 1, 1, 2, 3, 0};
+    int[] counterShip = { 1, 1, 2, 3};
     Board board;
     UIManagePanel choosePan;
     UIBoardPanel boardPanel;
@@ -103,9 +103,6 @@ public class FrameMangeShip extends JFrame implements ActionListener, KeyListene
                 case 3:
                     size = 2;
                     break;
-               // case 3:
-                   // size = 1;
-               //     break;
             }
             if (choosePan.direction[0].isSelected())// 0 = Chiều ngang / 1 = Chiều dọc
                 dir = 0;
@@ -153,7 +150,7 @@ public class FrameMangeShip extends JFrame implements ActionListener, KeyListene
         int[] data = new int[4];
         for (int i = 0; i < counterShip.length; i++) {
             for (int j = 0; j < counterShip[i]; j++) {
-                data = board.insertShipRandom(random, counterShip.length - i);
+                data = board.insertShipRandom(random, counterShip.length - i + 1);
                 playerShips.add(data);
                 boardPanel.drawShip(data);
             }
@@ -167,10 +164,7 @@ public class FrameMangeShip extends JFrame implements ActionListener, KeyListene
         }
         choosePan.direction[0].setEnabled(false);
         choosePan.direction[1].setEnabled(false);
-       // for (int i = 0; i < counterShip.length; i++) {
-           // counterShip[i] = 0;
-            //choosePan.counterLabel[i].setText("0");
-       // }
+
         choosePan.ship[0].setSelected(true);
 
     }
@@ -194,7 +188,6 @@ public class FrameMangeShip extends JFrame implements ActionListener, KeyListene
       for (int i = 0; i < counterShip.length; i++) {
                counterShip[0] = 1;
                counterShip[i] = i;
-               counterShip[4] = 0;
            choosePan.counterLabel[i].setText(" " + i);
            choosePan.counterLabel[0].setText("1");
        }
